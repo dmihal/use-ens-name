@@ -1,0 +1,29 @@
+{
+  "name": "use-ens-name",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Display ENS names in a React app",
+  "main": "dist/use-ens-name.js",
+  "types": "dist/use-ens-name.d.ts",
+  "author": "David Mihal <david@dmihal.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmihal/use-ens-name.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dmihal/use-ens-name/issues"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha -r ts-node/register test/\\*\\*/\\*.spec.ts"
+  },
+  "dependencies": {
+    "eth-ens-namehash": "^2.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.1",
+    "@types/react": "^17.0.37",
+    "react": "*",
+    "typescript": "^4.5.4"
+  }
+}
