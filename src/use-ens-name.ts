@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
 
-async function getName(address: string) {
+export async function getENSName(address: string): Promise<string | null> {
+  const isBrowser = typeof window !== 'undefined'
+
+  // The namehash package is heavy, so let's lazy-load it in the browser
   // @ts-ignore
-  const namehash = await import('eth-ens-namehash')
+  const namehash = isBrowser ? await import('eth-ens-namehash') : require('eth-ens-namehash')
 
   const node = namehash.hash(`${address.substring(2)}.addr.reverse`)
   const req = await fetch('https://cloudflare-eth.com/', {
@@ -41,7 +44,7 @@ export const useENSName = (address?: string | null, defaultName?: string | null)
 
   useEffect(() => {
     if (address) {
-      getName(address).then((name: string | null) => {
+      getENSName(address).then((name: string | null) => {
         cache[address.toLowerCase()] = name
         setName(name)
       })
