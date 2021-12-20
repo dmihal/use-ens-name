@@ -4,7 +4,7 @@ async function getName(address: string) {
   // @ts-ignore
   const namehash = await import('eth-ens-namehash')
 
-  const node = namehash.hash(`${address.substr(2)}.addr.reverse`)
+  const node = namehash.hash(`${address.substring(2)}.addr.reverse`)
   const req = await fetch('https://cloudflare-eth.com/', {
     'headers': {
       'content-type': "application/json",
@@ -34,16 +34,25 @@ async function getName(address: string) {
   return name
 }
 
+const cache: { [address: string]: string | null } = {}
+
 export const useENSName = (address?: string | null, defaultName?: string | null) => {
-  const [name, setName] = useState<string | null>(defaultName || null)
+  const [name, setName] = useState<string | null>((address && cache[address.toLowerCase()]) || defaultName || null)
 
   useEffect(() => {
     if (address) {
-      getName(address).then(setName)
+      getName(address).then((name: string | null) => {
+        cache[address.toLowerCase()] = name
+        setName(name)
+      })
     } else {
       setName(null)
     }
   }, [address])
 
   return name || defaultName || null
+}
+
+export const setENSCache = (address: string, name: string) => {
+  cache[address.toLowerCase()] = name
 }
