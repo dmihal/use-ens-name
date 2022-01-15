@@ -1,6 +1,6 @@
 {
   "name": "use-ens-name",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "license": "MIT",
   "description": "Display ENS names in a React app",
   "main": "dist/use-ens-name.js",
