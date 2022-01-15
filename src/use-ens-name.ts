@@ -28,6 +28,11 @@ export async function getENSName(address: string): Promise<string | null> {
     method: 'POST',
   })
   const response = await req.json()
+
+  if (!response.result) {
+    throw new Error(response.error || 'ENS query failed')
+  }
+
   const length = parseInt(response.result.substr(66,64), 16)
   if (length === 0) {
     return null
@@ -40,13 +45,20 @@ export async function getENSName(address: string): Promise<string | null> {
 const cache: { [address: string]: string | null } = {}
 
 export const useENSName = (address?: string | null, defaultName?: string | null) => {
-  const [name, setName] = useState<string | null>((address && cache[address.toLowerCase()]) || defaultName || null)
+  const initialName = (address && cache[address.toLowerCase()]) || defaultName || null;
+  const [name, setName] = useState<string | null>(initialName)
 
   useEffect(() => {
     if (address) {
+      if (name && name !== initialName) {
+        setName(null)
+      }
       getENSName(address).then((name: string | null) => {
         cache[address.toLowerCase()] = name
         setName(name)
+      })
+      .catch((e) => {
+        console.warn(`Fetch name for ${address} failed: ${e.message || e.toString()}`)
       })
     } else {
       setName(null)
